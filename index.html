@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Tracking Tool</title>
+    <style>
+        body {
+            background-color: #1e1e24;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 100px;
+        }
+        button {
+            background-color: #ff4757;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        button:hover {
+            background-color: #ff6b81;
+        }
+        .map-link {
+            display: inline-block;
+            margin-top: 25px;
+            background-color: #2ed573;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .map-link:hover {
+            background-color: #26af5f;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #a4b0be;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Location Visualizer</h1>
+    <p>Click the button below to fetch device coordinates and generate a Google Maps link.</p>
+    
+    <button onclick="getTrackingLocation()">Get Device Location</button>
+
+    <!-- This container will hold the coordinates text and the dynamic link -->
+    <div id="result"></div>
+
+    <script>
+        function getTrackingLocation() {
+            const resultDiv = document.getElementById("result");
+            
+            if (navigator.geolocation) {
+                resultDiv.innerHTML = "Requesting browser permission...";
+                
+                // Trigger the browser's native location prompt
+                navigator.geolocation.getCurrentPosition(processPosition, handleTrackingError);
+            } else {
+                resultDiv.innerHTML = "Error: Geolocation is not supported by this browser.";
+            }
+        }
+
+        function processPosition(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            const resultDiv = document.getElementById("result");
+            
+            // Format a standard Google Maps URL using the dynamic coordinates
+            const googleMapsUrl = `https://google.com{lat},${lon}`;
+            
+            // Inject the raw coordinates text AND a new button that opens Google Maps
+            resultDiv.innerHTML = `
+                <p style="color: #2ed573; font-weight: bold;">Coordinates Captured successfully!</p>
+                <p>Latitude: ${lat}<br>Longitude: ${lon}</p>
+                <a href="${googleMapsUrl}" target="_blank" class="map-link">📍 View on Google Maps</a>
+            `;
+        }
+
+        function handleTrackingError(error) {
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = "<span style='color: #ff4757;'>Error: Permission denied or location unavailable.</span>";
+        }
+    </script>
+
+</body>
+</html>
